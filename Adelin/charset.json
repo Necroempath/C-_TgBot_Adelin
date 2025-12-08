@@ -1,0 +1,223 @@
+{
+  "Charsheet": {
+    "preset": "vampire_v3_revised",
+    "profile": {
+      "name": "Sebastian",
+      "player": "Sahib",
+      "chronicle": "",
+      "nature": "",
+      "age": "27",
+      "sex": "Male",
+      "demeanor": "",
+      "concept": "",
+      "clan": "Tremere",
+      "generation": "10th",
+      "sire": "Morley",
+      "court": "",
+      "house": "",
+      "kith": "",
+      "primaryLegacy": "",
+      "secondaryLegacy": "",
+      "motley": "",
+      "seeming": "",
+      "residence": "",
+      "essence": "",
+      "affiliation": "",
+      "sect": ""
+    },
+    "abilities": {
+      "alertness": 3,
+      "athletics": 1,
+      "brawl": 0,
+      "empathy": 1,
+      "expression": 2,
+      "intimidation": 3,
+      "leadership": 0,
+      "streetwise": 0,
+      "subterfuge": 2,
+      "awareness": 0,
+      "animalken": 1,
+      "crafts": 0,
+      "drive": 1,
+      "etiquette": 1,
+      "firearms": 1,
+      "melee": 0,
+      "performance": 0,
+      "stealth": 2,
+      "survival": 0,
+      "larceny": 0,
+      "academics": 1,
+      "computer": 1,
+      "finance": 1,
+      "investigation": 2,
+      "law": 1,
+      "medicine": 2,
+      "occult": 3,
+      "politics": 1,
+      "science": 0,
+      "technology": 1,
+      "enigmas": 0,
+      "gremayre": 0,
+      "kenning": 0,
+      "legerdemain": 0,
+      "archery": 0,
+      "commerce": 0,
+      "ride": 0,
+      "hearthWisdom": 0,
+      "seneschal": 0,
+      "theology": 0,
+      "dodge": 1,
+      "security": 0,
+      "linguistics": 0,
+      "art": 0,
+      "martialArts": 0,
+      "meditation": 0,
+      "research": 0,
+      "cosmology": 0,
+      "enigmas_mta": 0,
+      "esoterica": 0
+    },
+    "abilitiesExtension": {
+      "talentName1": "",
+      "talentValue1": 0,
+      "talentName2": "",
+      "talentValue2": 0,
+      "skillName1": "",
+      "skillValue1": 0,
+      "skillName2": "",
+      "skillValue2": 0,
+      "knowledgeName1": "",
+      "knowledgeValue1": 0,
+      "knowledgeName2": "",
+      "knowledgeValue2": 0
+    },
+    "attributes": {
+      "strength": 1,
+      "dexterity": 3,
+      "stamina": 2,
+      "charisma": 2,
+      "manipulation": 3,
+      "appearance": 3,
+      "perception": 3,
+      "intelligence": 4,
+      "wits": 3
+    },
+    "backgrounds": [
+      {
+        "name": "Allies",
+        "value": 1
+      },
+      {
+        "name": "Contacts",
+        "value": 1
+      },
+      {
+        "name": "Informants",
+        "value": 1
+      },
+      {
+        "name": "Occult library",
+        "value": 1
+      }
+    ],
+    "disciplines": [
+      {
+        "name": "Thaumaturgy",
+        "value": 1
+      },
+      {
+        "name": "Dominate",
+        "value": 1
+      },
+      {
+        "name": "Obfuscate",
+        "value": 1
+      }
+    ],
+    "disciplinePaths": [],
+    "rituals": [],
+    "flaws": [],
+    "merits": [],
+    "notes": "",
+    "charHistory": "",
+    "goals": "",
+    "virtues": {
+      "conscience": 2,
+      "self_control": 5,
+      "courage": 3
+    },
+    "state": {
+      "willpowerRating": 10,
+      "willpowerPool": 10,
+      "experience": "",
+      "humanity": 7,
+      "pathName": "",
+      "bearingName": "",
+      "bearingModifier": "",
+      "bloodpool": 6,
+      "bloodPerTurn": "1",
+      "weakness": "",
+      "antithesis": "",
+      "thresholds": "",
+      "birthrightsFrailties": "",
+      "glamourRating": 0,
+      "glamourPool": 0,
+      "banalityRating": 0,
+      "banalityPool": 0,
+      "nightmare": 0,
+      "faith": 0,
+      "roadValue": 0,
+      "roadName": "",
+      "auraName": "",
+      "auraModifier": "",
+      "arete": 0,
+      "quintessence": 0,
+      "paradox": 0
+    },
+    "health": {
+      "bruised": 1,
+      "hurt": 1,
+      "injured": 0,
+      "wounded": 0,
+      "mauled": 0,
+      "crippled": 0,
+      "incapacitated": 0
+    },
+    "healthChimerical": {
+      "bruised": 0,
+      "hurt": 0,
+      "injured": 0,
+      "wounded": 0,
+      "mauled": 0,
+      "crippled": 0,
+      "incapacitated": 0
+    },
+    "arts": [],
+    "realms": {
+      "actor": 0,
+      "fae": 0,
+      "nature": 0,
+      "prop": 0,
+      "scene": 0,
+      "time": 0
+    },
+    "otherTraits": [],
+    "appearanceDescription": "",
+    "characterImage": "",
+    "alliesAndContacts": "",
+    "possessions": "",
+    "numinaAndOtherTraits": [],
+    "spheres": {
+      "correspondence": 0,
+      "entropy": 0,
+      "forces": 0,
+      "life": 0,
+      "matter": 0,
+      "mind": 0,
+      "prime": 0,
+      "spirit": 0,
+      "time": 0
+    },
+    "budget": 2700
+  }
+}
