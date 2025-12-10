@@ -126,21 +126,21 @@ public class CommandHandler
         {
             return "Specify damage to apply, e.g /damage bashing 2";
         }
-        
-        var states = _charsheet.GetHealth().ToArray();
+
+        var states = _charsheet.GetHealth().Select(_ => _.Item2).ToArray();
         for (int i = 0; i < count; i++)
         {
             for (int j = 0; j < states.Length; j++)
             {
-                if (damageValue > states[j].Item2 || states[j].Item2 == 0)
+                if (damageValue > states[j] || states[j] == 0)
                 {
-                    states[j].Item2 = damageValue;
+                    states[j] = damageValue;
                     break;
                 }
             }
         }
             
-        _charsheet.SetHealth(states.Select(_ => _.Item2).ToArray());
+        _charsheet.SetHealth(states);
         
         return Health();
     }
@@ -156,6 +156,11 @@ public class CommandHandler
         }
 
         return "";
+    }
+
+    private bool validateArguments(string[]? args)
+    {
+        return true;
     }
     
     private string Hello(string[]? args = null)
