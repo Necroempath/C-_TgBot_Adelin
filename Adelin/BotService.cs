@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Adelin;
+using Adelin.Models;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -10,9 +11,9 @@ using Telegram.Bot.Types.Enums;
 public class BotService
 {
     private readonly ITelegramBotClient _bot;
-    private readonly Root _charsheet;
+    private readonly CharacterAPI _charsheet;
 
-    public BotService(string token, Root sheet)
+    public BotService(string token, CharacterAPI sheet)
     {
         _bot = new TelegramBotClient(token);
         _charsheet = sheet;
@@ -42,7 +43,7 @@ public class BotService
         var commandKey = tokens[0];
         var args = tokens.Skip(1).ToArray();
         
-        CommandHandler commandHandler = new(_charsheet);
+        CommandHandler commandHandler = new(_charsheet, msg);
         
         var isCommandExist = commandHandler.Commands.TryGetValue(commandKey.ToLower(), out var command);
 

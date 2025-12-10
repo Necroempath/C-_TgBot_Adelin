@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Adelin.Models;
+using Telegram.Bot.Types;
 
 namespace Adelin;
 enum DamageType
@@ -13,19 +14,24 @@ enum DamageType
 
 public class CommandHandler
 {
-    private readonly Root _charsheet;
+    private readonly CharacterAPI _charsheet;
+    private readonly Message _msg;
     private Dictionary<string, Command> _commands;
     public Dictionary<string, Command> Commands => _commands;
     
-    public CommandHandler(Root charsheet)
+    public CommandHandler(CharacterAPI charsheet, Message msg)
     {
         _charsheet = charsheet;
+        _msg = msg;
         _commands = new()
         {
             ["roll"] = new(Roll, "/roll [X] — Roll X d10 dice"),
             ["health"] = new(Health, "/health — show character health, cap"),
             ["damage"] = new(Damage, "/damage [damageType] ?[amount] — receive [damageType] [amount] times"),
-            ["help"] = new(Help, "/help — show this message, cap"),
+            ["hello"] = new(Hello, ""),
+            ["heal"] = new(Heal, ""),
+            ["help"] = new(Help, "/help — show this message, cap")
+
         };
     }
     private string Roll(string[]? args)
@@ -68,22 +74,19 @@ public class CommandHandler
     private string Health(string[]? args = null)
     {
         var damages = new[] { ' ', '/', 'X', '*' };
-
-        var hp = _charsheet.Charsheet.Health;
+        
         var response = new StringBuilder();
-        var props = hp.GetType().GetProperties();
-        foreach (var prop in props)
-        {
-            var value = (int)prop.GetValue(hp)!;
 
-            if (value == 0)
+        var hpStates = _charsheet.GetHealth();
+        
+        foreach (var hp in hpStates)
+        {
+            if (hp.Item2 == 0)
             {
                 continue;
             }
 
-            var name = prop.Name;
-
-            response.AppendLine($"{name}: {damages[value]}");
+            response.AppendLine($"{hp.Item1}: {damages[hp.Item2]}");
         }
 
         return response.ToString();
@@ -91,7 +94,7 @@ public class CommandHandler
 
     private string Damage(string[]? args)
     {
-        if (args is null)
+        if (args is null || args.Length == 0)
         {
             return "Specify damage to apply, e.g /damage bashing 2";
         }
@@ -101,6 +104,11 @@ public class CommandHandler
 
         if (int.TryParse(args.Last(), out var temp))
         {
+            if (args.Length < 2)
+            {
+                return "Specify damage to apply, e.g /damage bashing 2";
+            }
+            
             damageType = args[^2];
             if (temp > 0)
             {
@@ -119,45 +127,51 @@ public class CommandHandler
             return "Specify damage to apply, e.g /damage bashing 2";
         }
         
-        var hp = _charsheet.Charsheet.Health;
-        var props = hp.GetType().GetProperties();
-        var states = props.Select(v => (int)v.GetValue(hp)!).ToList();
+        var states = _charsheet.GetHealth().ToArray();
         for (int i = 0; i < count; i++)
         {
-            for (int j = 0; j < states.Count; j++)
+            for (int j = 0; j < states.Length; j++)
             {
-                if (damageValue > states[j] || states[j] == 0)
+                if (damageValue > states[j].Item2 || states[j].Item2 == 0)
                 {
-                    states[j] = damageValue;
+                    states[j].Item2 = damageValue;
                     break;
                 }
             }
         }
             
-        for(int i = 0; i < props.Length; i++)
-        {
-            props[i].SetValue(hp, states[i]);
-        }
-
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        string newJson = JsonSerializer.Serialize(_charsheet, options);
-        File.WriteAllText("charset.json", newJson);
+        _charsheet.SetHealth(states.Select(_ => _.Item2).ToArray());
         
-        return Health(null);
+        return Health();
     }
 
+    private string Heal(string[]? args)
+    {
+        var count = 1;
+        var damageType = 0;
+        
+        if (args is null)
+        {
+            
+        }
+
+        return "";
+    }
+    
+    private string Hello(string[]? args = null)
+    {
+        var user = _msg.From.FirstName;
+        return $"Hello, {user}!";
+    }
+    
+    
     public string Help(string[]? args = null)
     {
         StringBuilder sb = new();
         
         foreach (var command in _commands.Values)
         {
-            sb.AppendLine(command.Description); 
+            if(command.Description!.Length > 0) sb.AppendLine(command.Description); 
         }
         
         return sb.ToString();

@@ -1,8 +1,3 @@
-public class Root
-{
-    public Charsheet Charsheet { get; set; }
-}
-
 public class Charsheet
 {
     public string Preset { get; set; }
