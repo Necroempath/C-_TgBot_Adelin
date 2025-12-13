@@ -30,18 +30,20 @@ public class CommandHandler
             ["damage"] = new(Damage, "/damage [damageType] ?[amount] — receive [damageType] [amount] times"),
             ["hello"] = new(Hello, ""),
             ["heal"] = new(Heal, ""),
+            ["sebastian"] = new(Sebastian, "Show character info"),
             ["help"] = new(Help, "/help — show this message, cap")
 
         };
     }
     private string Roll(string[]? args)
     {
-        var arg = args[0];
-        if (arg is null)
+        if (args is null || args.Length == 0)
         {
             return "/roll X or /roll XdY";
         }
-
+        
+        var arg = args[0];
+        
         int diceCount = 0;
         int diceType = 10;
 
@@ -94,40 +96,15 @@ public class CommandHandler
 
     private string Damage(string[]? args)
     {
-        if (args is null || args.Length == 0)
+        bool isValid = ValidateDamageAndHealing(args, out int damageValue, out int count);
+
+        if (!isValid)
         {
-            return "Specify damage to apply, e.g /damage bashing 2";
+            return "Specify damage to apply e.g /damage bashing 2";
         }
         
-        int count = 1;
-        string damageType = args.Last();
-
-        if (int.TryParse(args.Last(), out var temp))
-        {
-            if (args.Length < 2)
-            {
-                return "Specify damage to apply, e.g /damage bashing 2";
-            }
-            
-            damageType = args[^2];
-            if (temp > 0)
-            {
-                count = temp;
-            }
-        }
-
-        int damageValue;
-            
-        if(Enum.TryParse<DamageType>(damageType, ignoreCase: true, out var type))
-        {
-            damageValue = (int)type;    
-        }
-        else
-        {
-            return "Specify damage to apply, e.g /damage bashing 2";
-        }
-
         var states = _charsheet.GetHealth().Select(_ => _.Item2).ToArray();
+        
         for (int i = 0; i < count; i++)
         {
             for (int j = 0; j < states.Length; j++)
@@ -147,19 +124,77 @@ public class CommandHandler
 
     private string Heal(string[]? args)
     {
-        var count = 1;
-        var damageType = 0;
-        
-        if (args is null)
-        {
-            
-        }
+        bool isValid = ValidateDamageAndHealing(args, out int healValue, out int count);
 
-        return "";
+        if (!isValid)
+        {
+            return "Specify wound to heal e.g /heal lethal";
+        }
+        
+        var states = _charsheet.GetHealth().Select(_ => _.Item2).ToArray();
+
+        for (int i = 0; i < count; i++)
+        {
+            bool healed = false;
+            
+            for (int j = 0; j < states.Length; j++)
+            {
+                if (states[j] == healValue)
+                {
+                    states[j] = 0;
+                    healed = true;
+                    break;
+                }
+            }
+            
+            if(!healed)
+            {
+                break;
+            }
+        }
+        
+        _charsheet.SetHealth(states);
+         
+        return Health();
     }
 
-    private bool validateArguments(string[]? args)
+    private bool ValidateDamageAndHealing(string[]? args, out int type, out int count)
     {
+        type = 0;
+        count = 0;
+        
+        if (args is null || args.Length == 0)
+        {
+            return false;
+        }
+        
+        count = 1;
+        string damageType = args.Last();
+
+        if (int.TryParse(args.Last(), out var temp))
+        {
+            if (args.Length < 2)
+            {
+                return false;
+            }
+            
+            damageType = args[^2];
+            if (temp > 0)
+            {
+                count = temp;
+            }
+        }
+        
+            
+        if(Enum.TryParse<DamageType>(damageType, ignoreCase: true, out var damageValue))
+        {
+            type = (int)damageValue;    
+        }
+        else
+        {
+            return false;
+        }
+
         return true;
     }
     
@@ -168,7 +203,11 @@ public class CommandHandler
         var user = _msg.From.FirstName;
         return $"Hello, {user}!";
     }
-    
+
+    private string Sebastian(string[]? args = null)
+    {
+        return _charsheet.GetProfile();
+    }
     
     public string Help(string[]? args = null)
     {

@@ -42,4 +42,23 @@ public class CharacterAPI
         string newJson = JsonSerializer.Serialize(_character, options);
         File.WriteAllText("charset.json", newJson);
     }
+
+    public string GetProfile()
+    {
+        var name = _character.Profile.Name;
+        var age = _character.Profile.Age;
+        var clan = _character.Profile.Clan;
+        var gen = _character.Profile.Generation;
+        var sire = _character.Profile.Sire;
+        var nature = _character.Profile.Nature;
+        
+        return $"""
+                Name:\t{name}
+                Age:\t{age}
+                Clan:\t{clan}
+                Generation:\t{gen}-th 
+                Sire:\t{sire}\n
+                Nature:\t{nature}
+                """;
+    }
 }
