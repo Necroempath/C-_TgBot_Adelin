@@ -27,10 +27,12 @@ public class CommandHandler
         {
             ["roll"] = new(Roll, "/roll [X] — Roll X d10 dice"),
             ["health"] = new(Health, "/health — show character health, cap"),
-            ["damage"] = new(Damage, "/damage [damageType] ?[amount] — receive [damageType] [amount] times"),
-            ["hello"] = new(Hello, ""),
-            ["heal"] = new(Heal, ""),
-            ["sebastian"] = new(Sebastian, "Show character info"),
+            ["damage"] = new(Damage, "/damage [damage type] ?[amount] — receive [damageType] [amount] times"),
+            ["heal"] = new(Heal, "/heal [wound type] ?[amount] — heal [woundType] [amount] times"),
+            ["state"] = new(State, "/state show character state"),
+            ["virtues"] = new(Virtues, "/virtues show character virtues"),
+            ["set"] = new(SetProp, "/set [state name] set new value to specified person state"),
+            ["sebastian"] = new(Sebastian, "/sebastian show character general info"),
             ["help"] = new(Help, "/help — show this message, cap")
 
         };
@@ -197,16 +199,35 @@ public class CommandHandler
 
         return true;
     }
-    
-    private string Hello(string[]? args = null)
+
+    private string State(string[]? args = null)
     {
-        var user = _msg.From.FirstName;
-        return $"Hello, {user}!";
+        return _charsheet.GetState();
     }
 
+    private string Virtues(string[]? args = null)
+    {
+        return _charsheet.GetVirtues();
+    }
     private string Sebastian(string[]? args = null)
     {
         return _charsheet.GetProfile();
+    }
+
+    private string SetProp(string[]? args)
+    {
+        bool valid = !(args is null || args.Length != 2);
+        valid = int.TryParse(args[1], out var value);
+        valid = valid && value > 0;
+
+        if (valid)
+        {
+            var result = _charsheet.SetValueToProp(args[0], value);
+
+            return result ?? Help();
+        }
+        
+        return Help();
     }
     
     public string Help(string[]? args = null)
