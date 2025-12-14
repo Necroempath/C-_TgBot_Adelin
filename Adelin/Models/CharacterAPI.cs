@@ -1,14 +1,24 @@
+using System.Reflection;
 using System.Text.Json;
 
 namespace Adelin.Models;
 
 public class CharacterAPI
 {
+    private Root _root;
     private Charsheet _character;
+    private Dictionary<string, PropertyInfo> _properties;
 
-    public CharacterAPI(Charsheet character)
+    public CharacterAPI(Root root)
     {
-        _character = character;
+        _root = root;
+        _character = root.Charsheet;
+        _properties = new()
+        {
+            ["budget"] = _character.GetType().GetProperty("Budget")!,
+            ["bloodpool"] = _character.GetType().GetProperty("state").GetValue()!,
+            [""]
+        };
     }
     
     public IEnumerable<(string, int)> GetHealth()
@@ -39,7 +49,7 @@ public class CharacterAPI
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        string newJson = JsonSerializer.Serialize(_character, options);
+        string newJson = JsonSerializer.Serialize(_root, options);
         File.WriteAllText("charset.json", newJson);
     }
 
@@ -53,12 +63,13 @@ public class CharacterAPI
         var nature = _character.Profile.Nature;
         
         return $"""
-                Name:\t{name}
-                Age:\t{age}
-                Clan:\t{clan}
-                Generation:\t{gen}-th 
-                Sire:\t{sire}\n
-                Nature:\t{nature}
-                """;
+                Name {name}
+                Age: {age}
+                Clan: {clan}
+                Generation: {gen}-th
+                Sire: {sire}
+   
+                Nature: {nature}
+                """;   
     }
 }

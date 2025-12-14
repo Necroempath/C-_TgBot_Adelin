@@ -8,9 +8,9 @@ var options = new JsonSerializerOptions
     PropertyNameCaseInsensitive = true
 };
 
-var charsheet = JsonSerializer.Deserialize<Charsheet>(json, options)!;
+var root = JsonSerializer.Deserialize<Root>(json, options)!;
 
-BotService botService = new("7817800414:AAHucHBLV0f0UNR3zgze9fjgmAFVdexFRDA", new CharacterAPI(charsheet));
+BotService botService = new("7817800414:AAHucHBLV0f0UNR3zgze9fjgmAFVdexFRDA", new CharacterAPI(root));
 botService.Start();
 
 Console.WriteLine("Bot is running...");
@@ -18,6 +18,6 @@ Console.WriteLine("Bot is running...");
 Console.ReadLine();
 
 
-//bloodpool - 9/12
-//cash - 2700$
-// will - 9/10
+//bloodpool - 10/12
+//cash - 3200$
+// will - 10/10

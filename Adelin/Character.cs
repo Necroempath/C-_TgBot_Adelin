@@ -1,3 +1,8 @@
+public class Root
+{
+    public Charsheet Charsheet { get; set; } = null!;
+}
+
 public class Charsheet
 {
     public string Preset { get; set; }
@@ -27,6 +32,7 @@ public class Charsheet
     public string Possessions { get; set; }
     public object[] NuminaAndOtherTraits { get; set; }
     public Spheres Spheres { get; set; }
+    public int Budget { get; set; }
 }
 
 public class Profile
