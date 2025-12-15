@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Adelin.Models;
+using Adelin.Storage;
 using Telegram.Bot.Types;
 
 namespace Adelin;
@@ -45,39 +46,44 @@ public class CommandHandler
     {
         if (args is null || args.Length == 0)
         {
-            return "/roll X or /roll XdY";
+            return Help();
         }
         
-        var arg = args[0];
-        
-        int diceCount = 0;
-        int diceType = 10;
-
-        var match = Regex.Match(arg, @"^(\d+)d(\d+)$");
-
-        if (match.Success)
+        var response = new StringBuilder();
+        if (!int.TryParse(args[0], out int diceCount))
         {
-            diceCount = int.Parse(match.Groups[1].Value);
-            diceType = int.Parse(match.Groups[2].Value);
-        }
-        else if (int.TryParse(arg, out int simpleCount))
-        {
-            diceCount = simpleCount;
+            var sum = 0;
+            AbilityRegistry registry = new();
+            
+            foreach (var token in args)
+            {
+                var stat = registry.Find(token);
+                
+                if (stat is null)
+                {
+                    return Help();
+                }
+                int current = stat.GetValue(_charsheet.GetCharacter());
+                sum += current;
+                response.AppendLine($"{stat.Aliases[0]} ({current})");
+            }
+            
+            diceCount = sum;
         }
 
         var rng = new Random();
         var rolls = Enumerable.Range(0, diceCount)
-            .Select(_ => rng.Next(1, diceType + 1))
+            .Select(_ => rng.Next(1, 11))
             .ToList();
 
-        var response = new StringBuilder();
+        
         rolls.ForEach(r => response.Append($"{r} + "));
         var result = rolls.Sum();
         response[^2] = '=';
-        response.Append($" {result}");
+        response.AppendLine($" {result}");
         
         return response.ToString();
-    }
+     }
 
     private string Health(string[]? args = null)
     {

@@ -72,12 +72,12 @@ public sealed class AttributeRegistry
             .ToDictionary(x => x.alias, x => x.stat);
     }
 
-    public AttributeStat Find(string input)
+    public AttributeStat? Find(string input)
     {
         var key = Normalize(input);
 
         if (!_lookup.TryGetValue(key, out var stat))
-            throw new InvalidOperationException($"Unknown attribute: {input}");
+            return null;
 
         return stat;
     }

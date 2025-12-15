@@ -210,4 +210,9 @@ public class CharacterAPI
         }
         return sb.ToString();
     }
+
+    public Charsheet GetCharacter()
+    {
+        return _character;
+    }
 }
