@@ -9,6 +9,7 @@ public class CharacterAPI
     private Root _root;
     private Charsheet _character;
     private Dictionary<string, StatDescriptor> _stats;
+    private Dictionary<string, string> _attributes = new(9);
 
     public CharacterAPI(Root root)
     {
@@ -49,6 +50,7 @@ public class CharacterAPI
                 Max = int.MaxValue
             }
         };
+        var att = _character.Attributes;
     }
     
     public IEnumerable<(string, int)> GetHealth()
@@ -180,5 +182,20 @@ public class CharacterAPI
         
         
         return $"{desc.Item1}: {newValue}";
+    }
+
+    public string GetAttributes()
+    {
+        StringBuilder sb = new();
+
+        // var props = _character.Attributes.GetType().GetProperties();
+        // props.ToList().ForEach(p => sb.AppendLine($"{_attributes[p.Name]}: {p.GetValue(_character.Attributes)}"));
+        var registry = new AttributeRegistry();
+
+        foreach (var attr in registry.All)
+        {
+            sb.AppendLine($"{attr.Aliases[0]}: {attr.GetValue(_character)}");
+        }
+        return sb.ToString();
     }
 }
