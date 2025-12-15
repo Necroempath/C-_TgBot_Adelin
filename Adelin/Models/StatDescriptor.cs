@@ -2,7 +2,7 @@ namespace Adelin.Models;
 
 public class StatDescriptor
 {
-    public Func<int> Get { get; init; } = null!;
+    public Func<(string, int)> Get { get; init; } = null!;
     public Action<int> Set { get; init; } = null!;
     public Action<int>? Add { get; init; }
     

@@ -16,13 +16,37 @@ public class CharacterAPI
         _character = root.Charsheet;
         _stats = new()
         {
-            ["bloodpool"] = new ()
+            ["bp"] = new ()
             {
-                Get = () => _character.State.Bloodpool,
+                Get = () => (nameof(_character.State.Bloodpool), _character.State.Bloodpool),
                 Set = value => _character.State.Bloodpool = value,
                 Add = value => _character.State.Bloodpool += value,
                 Min = 0,
+                Max = 12
+            },
+            ["wp"] = new ()
+            {
+                Get = () => (nameof(_character.State.WillpowerRating), _character.State.WillpowerRating),
+                Set = value => _character.State.WillpowerRating = value,
+                Add = value => _character.State.WillpowerRating += value,
+                Min = 0,
                 Max = 10
+            },
+            ["money"] = new ()
+            {
+                Get = () => (nameof(_character.Money), _character.Money),
+                Set = value => _character.Money = value,
+                Add = value => _character.Money += value,
+                Min = 0,
+                Max = int.MaxValue
+            },
+            ["exp"] = new ()
+            {
+                Get = () => (nameof(_character.State.Experience), _character.State.Experience),
+                Set = value => _character.State.Experience = value,
+                Add = value => _character.State.Experience += value,
+                Min = 0,
+                Max = int.MaxValue
             }
         };
     }
@@ -86,6 +110,7 @@ public class CharacterAPI
         var bloodpool = _character.State.Bloodpool;
         var humanity = _character.State.Humanity;
         var experience = _character.State.Experience;
+        var money = _character.Money;
         
         return $"""
                 Willpower rating {willpowerRating}
@@ -93,6 +118,7 @@ public class CharacterAPI
                 Bloodpool: {bloodpool}
                 Humanity: {humanity}
                 Experience: {experience}
+                Money: {money}
                 """;   
     }
     public string GetVirtues()
@@ -105,18 +131,54 @@ public class CharacterAPI
         return sb.ToString();
     }
 
-    public string? SetValueToProp(string propName, int value)
+    public string TryGetValue(string key)
     {
-        var found = _properties.TryGetValue(propName.ToLower(), out var prop);
-
-        if (!found)
+        if (!_stats.TryGetValue(key, out var stat))
         {
-            return null;
+            return "Invalid stat name";
         }
-     
-        prop!.SetValue(prop, value);
+        
+        var desc = stat.Get();
+
+        return $"{desc.Item1}: {desc.Item2}";
+    }
+    public string TrySetValue(string key, int value)
+    {
+        if (!_stats.TryGetValue(key, out var stat))
+        {
+            return "Invalid stat name";
+        }
+
+        if (value < stat.Min || value > stat.Max)
+        {
+            return $"Value {value} is out of range. Min: {stat.Min}, Max: {stat.Max}";
+        }
+        
+        stat.Set(value);
+        SaveToJson();
+        var desc = stat.Get();
+
+        return $"{desc.Item1}: {value}";
+    }
+
+    public string TryAddValue(string key, int value)
+    {
+        if (!_stats.TryGetValue(key, out var stat))
+        {
+            return "Invalid stat name";
+        }
+        var desc = stat.Get();
+        var newValue = desc.Item2 + value;
+        
+        if (newValue  < stat.Min || newValue > stat.Max)
+        {
+            return $"New value {newValue} is out of range. Min: {stat.Min}, Max: {stat.Max}";
+        }
+        
+        stat.Set(newValue);
         SaveToJson();
         
-        return $"{prop.Name}: {value}";
+        
+        return $"{desc.Item1}: {newValue}";
     }
 }

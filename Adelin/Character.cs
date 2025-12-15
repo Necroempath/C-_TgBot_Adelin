@@ -32,7 +32,7 @@ public class Charsheet
     public string Possessions { get; set; }
     public object[] NuminaAndOtherTraits { get; set; }
     public Spheres Spheres { get; set; }
-    public int Budget { get; set; }
+    public int Money { get; set; }
 }
 
 public class Profile
@@ -167,7 +167,7 @@ public class State
 {
     public int WillpowerRating { get; set; }
     public int WillpowerPool { get; set; }
-    public string Experience { get; set; }
+    public int Experience { get; set; }
     public int Humanity { get; set; }
     public string PathName { get; set; }
     public string BearingName { get; set; }

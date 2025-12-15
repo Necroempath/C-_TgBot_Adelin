@@ -148,7 +148,7 @@
   "state": {
     "willpowerRating": 10,
     "willpowerPool": 10,
-    "experience": "1",
+    "experience": 1,
     "humanity": 7,
     "pathName": "",
     "bearingName": "",
@@ -217,5 +217,5 @@
     "spirit": 0,
     "time": 0
   },
-  "budget": 3200
+  "money": 3200
 }}

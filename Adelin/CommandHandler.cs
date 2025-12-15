@@ -31,7 +31,9 @@ public class CommandHandler
             ["heal"] = new(Heal, "/heal [wound type] ?[amount] — heal [woundType] [amount] times"),
             ["state"] = new(State, "/state show character state"),
             ["virtues"] = new(Virtues, "/virtues show character virtues"),
-            ["set"] = new(SetProp, "/set [state name] set new value to specified person state"),
+            ["get"] = new(GetStat, "/get [state name] get the current value of specified person state"),
+            ["set"] = new(SetStat, "/set [state name] set new value to specified person state"),
+            ["add"] = new(AddToStat, "/add [state name] add new value to specified person state"),
             ["sebastian"] = new(Sebastian, "/sebastian show character general info"),
             ["help"] = new(Help, "/help — show this message, cap")
 
@@ -93,7 +95,7 @@ public class CommandHandler
             response.AppendLine($"{hp.Item1}: {damages[hp.Item2]}");
         }
 
-        return response.ToString();
+        return response.ToString().Length == 0 ? "Full health" : response.ToString();
     }
 
     private string Damage(string[]? args)
@@ -126,6 +128,11 @@ public class CommandHandler
 
     private string Heal(string[]? args)
     {
+        if (args is not null && args[0] == "all")
+        {
+            _charsheet.SetHealth(new int[7]);
+            return Health();
+        }
         bool isValid = ValidateDamageAndHealing(args, out int healValue, out int count);
 
         if (!isValid)
@@ -214,7 +221,18 @@ public class CommandHandler
         return _charsheet.GetProfile();
     }
 
-    private string SetProp(string[]? args)
+    private string GetStat(string[]? args)
+    {
+        if (!(args is null || args.Length != 1))
+        {
+            var result = _charsheet.TryGetValue(args[0]);
+
+            return result;
+        }
+
+        return Help();
+    }
+    private string SetStat(string[]? args)
     {
         bool valid = !(args is null || args.Length != 2);
         valid = int.TryParse(args[1], out var value);
@@ -222,9 +240,24 @@ public class CommandHandler
 
         if (valid)
         {
-            var result = _charsheet.SetValueToProp(args[0], value);
+            var result = _charsheet.TrySetValue(args[0], value);
 
-            return result ?? Help();
+            return result;
+        }
+        
+        return Help();
+    }
+
+    private string AddToStat(string[]? args)
+    {
+        bool valid = !(args is null || args.Length != 2);
+        valid = int.TryParse(args[1], out var value);
+
+        if (valid)
+        {
+            var result = _charsheet.TryAddValue(args[0], value);
+
+            return result;
         }
         
         return Help();
