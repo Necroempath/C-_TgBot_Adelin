@@ -35,6 +35,7 @@ public class CommandHandler
             ["set"] = new(SetStat, "/set [state name] set new value to specified person state"),
             ["add"] = new(AddToStat, "/add [state name] add new value to specified person state"),
             ["attributes"] = new(GetAttributes, "/attributes show person attributes"),
+            ["abilities"] = new(GetAbilities, "/abilities show person abilities"),
             ["sebastian"] = new(Sebastian, "/sebastian show character general info"),
             ["help"] = new(Help, "/help — show this message, cap")
 
@@ -267,6 +268,11 @@ public class CommandHandler
     private string GetAttributes(string[]? args = null)
     {
         return _charsheet.GetAttributes();
+    }
+
+    private string GetAbilities(string[]? args = null)
+    {
+        return _charsheet.GetAbilities();
     }
     public string Help(string[]? args = null)
     {

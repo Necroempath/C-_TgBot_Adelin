@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using Adelin.Storage;
 
 namespace Adelin.Models;
 
@@ -188,9 +189,20 @@ public class CharacterAPI
     {
         StringBuilder sb = new();
 
-        // var props = _character.Attributes.GetType().GetProperties();
-        // props.ToList().ForEach(p => sb.AppendLine($"{_attributes[p.Name]}: {p.GetValue(_character.Attributes)}"));
         var registry = new AttributeRegistry();
+
+        foreach (var attr in registry.All)
+        {
+            sb.AppendLine($"{attr.Aliases[0]}: {attr.GetValue(_character)}");
+        }
+        return sb.ToString();
+    }
+    
+    public string GetAbilities()
+    {
+        StringBuilder sb = new();
+
+        var registry = new AbilityRegistry();
 
         foreach (var attr in registry.All)
         {
