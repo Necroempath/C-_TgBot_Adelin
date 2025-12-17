@@ -126,14 +126,30 @@ public class CharacterAPI
     }
     public string GetVirtues()
     {
-        var props = _character.Virtues.GetType().GetProperties();
-        
         StringBuilder sb = new();
-        
-        props.ToList().ForEach(p => sb.AppendLine($"{p.Name}: {p.GetValue(_character.Virtues)}"));
+
+        var registry = new VirtueRegistry();
+
+        foreach (var attr in registry.All)
+        {
+            sb.AppendLine($"{attr.Aliases[0]}: {attr.GetValue(_character)}");
+        }
         return sb.ToString();
     }
+    
+    public string GetDisciplines()
+    {
+        StringBuilder sb = new();
 
+        var registry = new DisciplineRegistry();
+
+        foreach (var attr in registry.All)
+        {
+            sb.AppendLine($"{attr.Aliases[0]}: {attr.GetValue(_character)}");
+        }
+        return sb.ToString();
+    }
+    
     public string TryGetValue(string key)
     {
         if (!_stats.TryGetValue(key, out var stat))

@@ -1,7 +1,9 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Adelin.Abstractions;
 using Adelin.Models;
+using Adelin.Realizations;
 using Adelin.Storage;
 using Telegram.Bot.Types;
 
@@ -18,10 +20,25 @@ public class CommandHandler
     private readonly CharacterAPI _charsheet;
     private readonly Message _msg;
     private Dictionary<string, Command> _commands;
+    IEnumerable<IRollStat> attributeStats = new AttributeRegistry().All;
+    IEnumerable<IRollStat> abilityStats = new AbilityRegistry().All;
+    IEnumerable<IRollStat> disciplineStats = new DisciplineRegistry().All;
+    IEnumerable<IRollStat> virtueStats     = new VirtueRegistry().All;
+    IEnumerable<IRollStat> stateStats      = new StateRegistry().All;
+    RollStatRegistry rollRegistry;
+    
     public Dictionary<string, Command> Commands => _commands;
     
     public CommandHandler(CharacterAPI charsheet, Message msg)
     {
+        IEnumerable<IRollStat> allRollStats =
+            attributeStats
+                .Concat(abilityStats)
+                .Concat(disciplineStats)
+                .Concat(virtueStats)
+                .Concat(stateStats);
+        
+        rollRegistry = new RollStatRegistry(allRollStats);
         _charsheet = charsheet;
         _msg = msg;
         _commands = new()
@@ -37,6 +54,7 @@ public class CommandHandler
             ["add"] = new(AddToStat, "/add [state name] add new value to specified person state"),
             ["attributes"] = new(GetAttributes, "/attributes show person attributes"),
             ["abilities"] = new(GetAbilities, "/abilities show person abilities"),
+            ["disciplines"] = new(GetDisciplines, "/disciplines show person disciplines"),
             ["sebastian"] = new(Sebastian, "/sebastian show character general info"),
             ["help"] = new(Help, "/help — show this message, cap")
 
@@ -53,11 +71,10 @@ public class CommandHandler
         if (!int.TryParse(args[0], out int diceCount))
         {
             var sum = 0;
-            AbilityRegistry registry = new();
             
             foreach (var token in args)
             {
-                var stat = registry.Find(token);
+                var stat = rollRegistry.Find(token);
                 
                 if (stat is null)
                 {
@@ -274,6 +291,11 @@ public class CommandHandler
     private string GetAttributes(string[]? args = null)
     {
         return _charsheet.GetAttributes();
+    }
+
+    private string GetDisciplines(string[]? args = null)
+    {
+        return _charsheet.GetDisciplines();
     }
 
     private string GetAbilities(string[]? args = null)

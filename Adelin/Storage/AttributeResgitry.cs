@@ -2,14 +2,12 @@ using Adelin.Realizations;
 
 public sealed class AttributeRegistry
 {
-    private readonly Dictionary<string, AttributeStat> _lookup;
-
-    public IReadOnlyCollection<AttributeStat> All => _lookup.Values.Distinct().ToList();
+   public IReadOnlyCollection<AttributeStat> All { get; }
 
     public AttributeRegistry()
     {
-        var list = new[]
-        {
+        All =
+        [
             new AttributeStat
             {
                 Key = "strength",
@@ -64,24 +62,6 @@ public sealed class AttributeRegistry
                 Aliases = ["смекалка", "wits"],
                 Selector = a => a.Wits
             }
-        };
-
-
-        _lookup = list
-            .SelectMany(stat => stat.Aliases.Select(a => (alias: Normalize(a), stat)))
-            .ToDictionary(x => x.alias, x => x.stat);
+        ];
     }
-
-    public AttributeStat? Find(string input)
-    {
-        var key = Normalize(input);
-
-        if (!_lookup.TryGetValue(key, out var stat))
-            return null;
-
-        return stat;
-    }
-
-    private static string Normalize(string s)
-        => s.Trim().ToLowerInvariant();
 }

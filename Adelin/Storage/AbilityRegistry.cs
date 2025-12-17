@@ -4,15 +4,13 @@ namespace Adelin.Storage;
 
 public sealed class AbilityRegistry
 {
-    private readonly Dictionary<string, AbilityStat> _lookup;
-
-    public IReadOnlyCollection<AbilityStat> All => _lookup.Values.Distinct().ToList();
+    public IReadOnlyCollection<AbilityStat> All { get; }
 
     public AbilityRegistry()
     {
-       var list = new[]
-{
-    new AbilityStat { Key = "alertness", Aliases = new[] {"бдительность", "alertness"}, Selector = a => a.Alertness },
+        All =
+        [
+            new AbilityStat { Key = "alertness", Aliases = new[] {"бдительность", "alertness"}, Selector = a => a.Alertness },
     new AbilityStat { Key = "athletics", Aliases = new[] {"атлетика", "athletics"}, Selector = a => a.Athletics },
     new AbilityStat { Key = "brawl", Aliases = new[] {"драка", "brawl"}, Selector = a => a.Brawl },
     new AbilityStat { Key = "empathy", Aliases = new[] {"эмпатия", "empathy"}, Selector = a => a.Empathy },
@@ -40,24 +38,8 @@ public sealed class AbilityRegistry
     new AbilityStat { Key = "occult", Aliases = new[] {"оккультизм", "occult"}, Selector = a => a.Occult },
     new AbilityStat { Key = "politics", Aliases = new[] {"политика", "politics"}, Selector = a => a.Politics },
     new AbilityStat { Key = "science", Aliases = new[] {"наука", "science"}, Selector = a => a.Science },
-    new AbilityStat { Key = "linguistics", Aliases = new[] {"лингвистика", "linguistics"}, Selector = a => a.Linguistics },
-};
-
-
-        _lookup = list
-            .SelectMany(stat => stat.Aliases.Select(a => (alias: Normalize(a), stat)))
-            .ToDictionary(x => x.alias, x => x.stat);
+    new AbilityStat { Key = "linguistics", Aliases = new[] {"лингвистика", "linguistics"}, Selector = a => a.Linguistics }
+        ];
     }
 
-    public AbilityStat Find(string input)
-    {
-        var key = Normalize(input);
-
-        if (!_lookup.TryGetValue(key, out var stat))
-            throw new InvalidOperationException($"Unknown ability: {input}");
-
-        return stat;
-    }
-
-    private static string Normalize(string s) => s.Trim().ToLowerInvariant();
 }
