@@ -28,8 +28,8 @@
     "alertness": 3,
     "athletics": 1,
     "brawl": 0,
-    "empathy": 1,
-    "expression": 2,
+    "empathy": 2,
+    "expression": 3,
     "intimidation": 3,
     "leadership": 0,
     "streetwise": 0,
@@ -94,7 +94,7 @@
     "strength": 1,
     "dexterity": 3,
     "stamina": 2,
-    "charisma": 2,
+    "charisma": 3,
     "manipulation": 3,
     "appearance": 3,
     "perception": 3,
@@ -130,7 +130,7 @@
     },
     {
       "name": "Auspex",
-      "value": 1
+      "value": 2
     }
   ],
   "disciplinePaths": [],
@@ -153,7 +153,7 @@
     "pathName": "",
     "bearingName": "",
     "bearingModifier": "",
-    "bloodpool": 10,
+      "bloodpool": 10,
     "bloodPerTurn": "1",
     "weakness": "",
     "antithesis": "",
